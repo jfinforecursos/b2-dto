@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +18,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Pedido {
 
     @Id
@@ -34,4 +32,11 @@ public class Pedido {
     @JoinColumn(name = "cliente_id", nullable = false)
     @JsonIgnoreProperties("pedidos")
     private Cliente cliente;
+
+    public Pedido(Long id, String descripcion, Double total, Cliente cliente) {
+        this.id = id;
+        this.descripcion = descripcion;
+        this.total = total;
+        this.cliente = cliente;
+    }
 }

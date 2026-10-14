@@ -114,7 +114,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -124,7 +123,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Producto {
 
     @Id
@@ -140,6 +138,15 @@ public class Producto {
     // Este campo existe en la base de datos para la contabilidad interna de la empresa,
     // pero NUNCA debe ser visto por el cliente ni enviado en el JSON de la API.
     private Double costoProveedor;
+
+    public Producto(Long id, String nombre, String descripcion, Double precio, Integer stock, Double costoProveedor) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.stock = stock;
+        this.costoProveedor = costoProveedor;
+    }
 }
 ```
 
@@ -376,15 +383,18 @@ import com.example.apibasica.service.ProductoService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Productos", description = "Gestión de productos utilizando DTOs de entrada y salida")
 @RestController
 @RequestMapping("/api/productos")
-@RequiredArgsConstructor
 public class ProductoController {
 
     private final ProductoService productoService;
+
+    // Inyección de dependencias por constructor manual (sin Lombok)
+    public ProductoController(ProductoService productoService) {
+        this.productoService = productoService;
+    }
 
     // GET /api/productos
     @Operation(summary = "Obtener todos los productos")

@@ -5,7 +5,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +14,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Producto {
 
     @Id
@@ -29,5 +27,13 @@ public class Producto {
 
     // Dato sensible e interno de la empresa: NUNCA se debe exponer en los DTOs
     private Double costoProveedor;
-}
 
+    public Producto(Long id, String nombre, String descripcion, Double precio, Integer stock, Double costoProveedor) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.stock = stock;
+        this.costoProveedor = costoProveedor;
+    }
+}

@@ -16,18 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.apibasica.model.Cliente;
 import com.example.apibasica.service.ClienteService;
 
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Clientes", description = "Gestión de clientes y búsqueda por email")
 @RestController
 @RequestMapping("/api/clientes")
-@RequiredArgsConstructor
 public class ClienteController {
 
-    // Inyección por constructor generada automáticamente por Lombok (@RequiredArgsConstructor)
+    // Inyección de dependencias por constructor manual (sin @Autowired ni Lombok)
     private final ClienteService clienteService;
+
+    public ClienteController(ClienteService clienteService) {
+        this.clienteService = clienteService;
+    }
 
     // 1. Obtener todos los clientes (READ)
     @GetMapping

@@ -19,15 +19,18 @@ import com.example.apibasica.service.ProductoService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Productos", description = "Gestión de productos utilizando DTOs de entrada y salida")
 @RestController
 @RequestMapping("/api/productos")
-@RequiredArgsConstructor
 public class ProductoController {
 
+    // Inyección de dependencias por constructor manual (sin @Autowired ni Lombok)
     private final ProductoService productoService;
+
+    public ProductoController(ProductoService productoService) {
+        this.productoService = productoService;
+    }
 
     // 1. Obtener todos los productos (READ)
     @Operation(summary = "Obtener todos los productos", description = "Retorna la lista de productos como ProductoResponseDTO")
