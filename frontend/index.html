@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cliente & Pedido API Explorer - Demo Educativa</title>
+    <!-- Fuentes Google: Inter y JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <!-- Encabezado con Enlaces Didácticos -->
+    <header class="app-header">
+      <div class="brand">
+        <h1>Cliente & Pedido API Explorer</h1>
+        <p>Aprende a consumir endpoints REST con JavaScript Fetch nativo</p>
+      </div>
+      <div class="header-links">
+        <a href="http://localhost:8080/scalar" target="_blank" class="pill-link">
+          📖 Ver Scalar Docs
+        </a>
+        <a href="http://localhost:8080/swagger-ui.html" target="_blank" class="pill-link">
+          ⚡ Swagger UI
+        </a>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- Navegación por Pestañas -->
+      <nav class="tabs-nav">
+        <button id="tab-btn-clientes" class="tab-btn active">👥 Clientes</button>
+        <button id="tab-btn-pedidos" class="tab-btn">📦 Pedidos</button>
+        <button id="tab-btn-lab" class="tab-btn">🧪 Laboratorio de Errores (400 & 404)</button>
+      </nav>
+
+      <!-- PESTAÑA 1: CLIENTES -->
+      <section id="panel-clientes" class="tab-panel active">
+        <div class="toolbar">
+          <div class="search-box">
+            <input type="text" id="input-buscar-cliente" placeholder="Buscar por email o ID..." />
+            <button id="btn-buscar-email" class="btn btn-secondary">🔍 Buscar Email</button>
+            <button id="btn-buscar-id" class="btn btn-secondary"># Buscar ID</button>
+            <button id="btn-reset-clientes" class="btn btn-secondary">🔄 Todos</button>
+          </div>
+          <button id="btn-modal-crear-cliente" class="btn btn-primary">+ Nuevo Cliente</button>
+        </div>
+
+        <div id="grid-clientes" class="card-grid">
+          <!-- Renderizado dinámico de tarjetas de clientes -->
+        </div>
+      </section>
+
+      <!-- PESTAÑA 2: PEDIDOS -->
+      <section id="panel-pedidos" class="tab-panel">
+        <div class="toolbar">
+          <div class="search-box">
+            <select id="select-filtro-cliente">
+              <option value="">-- Todos los Pedidos --</option>
+            </select>
+            <button id="btn-reset-pedidos" class="btn btn-secondary">🔄 Recargar</button>
+          </div>
+          <button id="btn-modal-crear-pedido" class="btn btn-primary">+ Nuevo Pedido</button>
+        </div>
+
+        <div id="grid-pedidos" class="card-grid">
+          <!-- Renderizado dinámico de pedidos -->
+        </div>
+      </section>
+
+      <!-- PESTAÑA 3: LABORATORIO DE ERRORES (PRUEBAS EDUCATIVAS) -->
+      <section id="panel-lab" class="tab-panel">
+        <div style="margin-bottom: 1.5rem;">
+          <h2>Laboratorio de Reglas de Negocio y Excepciones</h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Haz clic en los botones para disparar excepciones a propósito en Spring Boot y ver cómo el frontend captura el JSON devuelto por <code>GlobalExceptionHandler</code>.
+          </p>
+        </div>
+
+        <div class="card-grid">
+          <!-- Test 1 -->
+          <div class="lab-card">
+            <div class="lab-badge badge-400">HTTP 400 Bad Request</div>
+            <h3>Regla: Email Duplicado</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">
+              Intenta registrar un cliente con el correo <code>juan.perez@example.com</code> que ya existe en la base de datos sembrada.
+            </p>
+            <button id="btn-lab-email-duplicado" class="btn btn-danger btn-sm">⚡ Probar Email Duplicado</button>
+          </div>
+
+          <!-- Test 2 -->
+          <div class="lab-card">
+            <div class="lab-badge badge-400">HTTP 400 Bad Request</div>
+            <h3>Regla: Monto de Pedido Inválido</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">
+              Intenta crear un pedido con total negativo (<code>total: -50</code>). El servicio validará la regla de negocio.
+            </p>
+            <button id="btn-lab-monto-negativo" class="btn btn-danger btn-sm">⚡ Probar Monto Negativo</button>
+          </div>
+
+          <!-- Test 3 -->
+          <div class="lab-card">
+            <div class="lab-badge badge-400">HTTP 400 Bad Request</div>
+            <h3>Regla: Pedido sin Cliente</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">
+              Envía <code>cliente: null</code>. El backend rechazará la petición indicando que debe tener un cliente válido.
+            </p>
+            <button id="btn-lab-sin-cliente" class="btn btn-danger btn-sm">⚡ Probar Sin Cliente</button>
+          </div>
+
+          <!-- Test 4 -->
+          <div class="lab-card">
+            <div class="lab-badge badge-404">HTTP 404 Not Found</div>
+            <h3>Excepción: Cliente Inexistente</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">
+              Llama a <code>GET /api/clientes/9999</code>. El backend lanzará <code>RecursoNoEncontradoException</code>.
+            </p>
+            <button id="btn-lab-cliente-404" class="btn btn-danger btn-sm">⚡ Buscar ID 9999</button>
+          </div>
+
+          <!-- Test 5 -->
+          <div class="lab-card">
+            <div class="lab-badge badge-404">HTTP 404 Not Found</div>
+            <h3>Excepción: Pedido Inexistente</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">
+              Llama a <code>GET /api/pedidos/9999</code> para verificar el manejo del 404 en la entidad Pedido.
+            </p>
+            <button id="btn-lab-pedido-404" class="btn btn-danger btn-sm">⚡ Buscar Pedido 9999</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- MODAL: Crear/Editar Cliente -->
+    <div id="modal-cliente" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="modal-cliente-titulo">Nuevo Cliente</h3>
+          <button id="btn-cerrar-modal-cliente" class="close-btn">&times;</button>
+        </div>
+        <form id="form-cliente">
+          <input type="hidden" id="form-cliente-id" />
+          <div class="form-group">
+            <label for="form-cliente-nombre">Nombre Completo:</label>
+            <input type="text" id="form-cliente-nombre" required placeholder="Ej: Sofía Castro" />
+          </div>
+          <div class="form-group">
+            <label for="form-cliente-email">Correo Electrónico:</label>
+            <input type="email" id="form-cliente-email" required placeholder="Ej: sofia@example.com" />
+          </div>
+          <div class="form-group">
+            <label for="form-cliente-telefono">Teléfono:</label>
+            <input type="text" id="form-cliente-telefono" required placeholder="Ej: 555-8899" />
+          </div>
+          <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem;">
+            <button type="button" id="btn-cancelar-cliente" class="btn btn-secondary">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar Cliente</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL: Crear Pedido -->
+    <div id="modal-pedido" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Nuevo Pedido</h3>
+          <button id="btn-cerrar-modal-pedido" class="close-btn">&times;</button>
+        </div>
+        <form id="form-pedido">
+          <div class="form-group">
+            <label for="form-pedido-cliente">Seleccionar Cliente:</label>
+            <select id="form-pedido-cliente" required>
+              <option value="">-- Elige un cliente --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="form-pedido-desc">Descripción del Producto/Servicio:</label>
+            <input type="text" id="form-pedido-desc" required placeholder="Ej: Monitor Gamer 144Hz" />
+          </div>
+          <div class="form-group">
+            <label for="form-pedido-total">Monto Total ($):</label>
+            <input type="number" step="0.01" id="form-pedido-total" required placeholder="Ej: 299.99" />
+          </div>
+          <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem;">
+            <button type="button" id="btn-cancelar-pedido" class="btn btn-secondary">Cancelar</button>
+            <button type="submit" class="btn btn-success">Registrar Pedido</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Barra de Inspección HTTP en Vivo (Para Aprendizaje de Estudiantes) -->
+    <div class="http-inspector">
+      <div class="inspector-header">
+        <span>📡 Inspector de Petición Fetch en Tiempo Real</span>
+        <span id="inspector-timestamp" style="font-size: 0.75rem;">Listo para peticiones</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem;">
+        <span id="inspector-method" class="code-pill">GET</span>
+        <span id="inspector-url" style="color: #e2e8f0; word-break: break-all;">/api/clientes</span>
+        <span id="inspector-status" class="status-badge status-2xx">200 OK</span>
+      </div>
+      <div style="color: var(--text-muted); font-size: 0.75rem; white-space: pre-wrap; overflow-x: auto;" id="inspector-response">
+        // La respuesta del servidor aparecerá aquí...
+      </div>
+    </div>
+
+    <!-- Contenedor de Alertas Toast -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

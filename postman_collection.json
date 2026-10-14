@@ -1,0 +1,750 @@
+{
+	"info": {
+		"_postman_id": "c1f7b889-4e02-4f32-8419-f54f762319df",
+		"name": "API Básica - Clientes y Pedidos",
+		"description": "Colección completa de pruebas para la API de Clientes y Pedidos, incluyendo CRUD completo, métodos personalizados y pruebas de validación de reglas de negocio y excepciones (400 y 404).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Clientes (CRUD)",
+			"item": [
+				{
+					"name": "Obtener todos los clientes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Retorna una lista de clientes\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener cliente por ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Retorna el cliente con ID correcto\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.id).to.eql(1);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener cliente por Email (Método personalizado)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Retorna el cliente con el email buscado\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.email).to.eql(\"juan.perez@example.com\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes/email/juan.perez@example.com",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", "email", "juan.perez@example.com"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 201 Created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"Retorna el cliente creado con ID asignado\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"id\");",
+									"    pm.expect(jsonData.nombre).to.eql(\"Carlos Mendoza\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Carlos Mendoza\",\n  \"email\": \"carlos.mendoza@example.com\",\n  \"telefono\": \"555-9012\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/clientes",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"El nombre del cliente fue actualizado\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.nombre).to.eql(\"Juan Pérez Actualizado\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Juan Pérez Actualizado\",\n  \"email\": \"juan.perez@example.com\",\n  \"telefono\": \"555-9999\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/clientes/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 204 No Content\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes/2",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", "2"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Pedidos (CRUD)",
+			"item": [
+				{
+					"name": "Obtener todos los pedidos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Retorna lista de pedidos\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pedidos",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pedidos"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener pedido por ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Retorna el pedido con ID correspondiente\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.id).to.eql(1);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pedidos/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pedidos", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener pedidos por ID de Cliente (Método personalizado)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Retorna los pedidos pertenecientes al cliente 1\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"    if (jsonData.length > 0) {",
+									"        pm.expect(jsonData[0].cliente.id).to.eql(1);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pedidos/cliente/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pedidos", "cliente", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear pedido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 201 Created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"Retorna el pedido creado con ID y relación al cliente\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"id\");",
+									"    pm.expect(jsonData.total).to.eql(250.75);",
+									"    pm.expect(jsonData.cliente.id).to.eql(1);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"descripcion\": \"Monitor Curvo 27 pulgadas\",\n  \"total\": 250.75,\n  \"cliente\": {\n    \"id\": 1\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pedidos",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pedidos"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar pedido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"El total del pedido fue actualizado\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.total).to.eql(900.0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"descripcion\": \"Laptop Lenovo ThinkPad Pro Actualizada\",\n  \"total\": 900.0\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pedidos/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pedidos", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar pedido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 204 No Content\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pedidos/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pedidos", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Pruebas de Lógica de Negocio y Excepciones",
+			"item": [
+				{
+					"name": "[400] Regla Negocio - Crear cliente con email duplicado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 400 Bad Request\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test(\"Mensaje indica email duplicado\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"mensaje\");",
+									"    pm.expect(jsonData.mensaje).to.include(\"Ya existe un cliente con el email\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Juan Falso\",\n  \"email\": \"juan.perez@example.com\",\n  \"telefono\": \"000-0000\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/clientes",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[400] Regla Negocio - Actualizar cliente con email en uso por otro",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 400 Bad Request\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test(\"Mensaje indica que el email está en uso\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"mensaje\");",
+									"    pm.expect(jsonData.mensaje).to.include(\"ya está en uso\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Juan Pérez\",\n  \"email\": \"maria.gomez@example.com\",\n  \"telefono\": \"555-1234\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/clientes/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[400] Regla Negocio - Crear pedido con monto total <= 0",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 400 Bad Request\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test(\"Mensaje indica que monto debe ser mayor a 0\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"mensaje\");",
+									"    pm.expect(jsonData.mensaje).to.include(\"mayor a 0\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"descripcion\": \"Pedido Inválido\",\n  \"total\": -50.0,\n  \"cliente\": {\n    \"id\": 1\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pedidos",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pedidos"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[400] Regla Negocio - Crear pedido sin cliente asignado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 400 Bad Request\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test(\"Mensaje indica falta de cliente\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"mensaje\");",
+									"    pm.expect(jsonData.mensaje).to.include(\"cliente con ID válido\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"descripcion\": \"Pedido Huérfano\",\n  \"total\": 100.0,\n  \"cliente\": null\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pedidos",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pedidos"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[404] No Encontrado - Obtener cliente inexistente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 404 Not Found\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"pm.test(\"Mensaje indica cliente no encontrado\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"mensaje\");",
+									"    pm.expect(jsonData.mensaje).to.include(\"Cliente no encontrado\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes/9999",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", "9999"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[404] No Encontrado - Buscar cliente por email inexistente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 404 Not Found\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"pm.test(\"Mensaje indica cliente no encontrado\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"mensaje\");",
+									"    pm.expect(jsonData.mensaje).to.include(\"Cliente no encontrado con email\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes/email/correo_que_no_existe@test.com",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", "email", "correo_que_no_existe@test.com"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[404] No Encontrado - Crear pedido para cliente que no existe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 404 Not Found\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"pm.test(\"Mensaje indica cliente no encontrado\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"mensaje\");",
+									"    pm.expect(jsonData.mensaje).to.include(\"Cliente no encontrado\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"descripcion\": \"Pedido Fantasma\",\n  \"total\": 120.0,\n  \"cliente\": {\n    \"id\": 9999\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pedidos",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pedidos"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[404] No Encontrado - Obtener pedidos de cliente inexistente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 404 Not Found\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"pm.test(\"Mensaje indica cliente no encontrado\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"mensaje\");",
+									"    pm.expect(jsonData.mensaje).to.include(\"Cliente no encontrado\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pedidos/cliente/9999",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pedidos", "cliente", "9999"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[404] No Encontrado - Obtener pedido inexistente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code es 404 Not Found\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"pm.test(\"Mensaje indica pedido no encontrado\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"mensaje\");",
+									"    pm.expect(jsonData.mensaje).to.include(\"Pedido no encontrado\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pedidos/9999",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pedidos", "9999"]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
